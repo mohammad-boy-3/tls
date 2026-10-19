@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#11152b">
+<meta name="description" content="یک آموزش تعاملی فارسی درباره تاریخچه، سازوکار و امنیت HTTP و HTTPS">
+<title>HTTP در برابر HTTPS | آزمایشگاه امنیت وب</title>
+<style>
+:root{
+  --bg:#0b1020;--bg2:#111832;--panel:rgba(21,30,58,.82);--panel2:#182343;
+  --text:#eef3ff;--muted:#aab7d5;--line:rgba(165,185,235,.17);
+  --accent:#8b9cff;--accent2:#5ce1c3;--warn:#ffcb70;--danger:#ff7f91;
+  --shadow:0 18px 55px rgba(0,0,0,.24);--radius:22px;
+}
+body.light{
+  --bg:#f2f5ff;--bg2:#e9efff;--panel:rgba(255,255,255,.88);--panel2:#edf1ff;
+  --text:#17213d;--muted:#566481;--line:rgba(41,60,110,.14);
+  --accent:#4c5bd4;--accent2:#087f70;--warn:#9b6500;--danger:#c12d4a;
+  --shadow:0 16px 42px rgba(40,55,100,.12);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{margin:0;background:
+radial-gradient(ellipse at 15% 0%,rgba(85,105,230,.18),transparent 34%),
+radial-gradient(ellipse at 90% 18%,rgba(37,211,181,.10),transparent 30%),var(--bg);
+color:var(--text);font-family:Tahoma,"Segoe UI",Arial,sans-serif;line-height:1.9;transition:background .25s,color .25s}
+a{color:inherit}
+button{font:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--accent2);outline-offset:3px}
+.container{width:min(1120px,calc(100% - 32px));margin:auto}
+.topbar{position:sticky;top:0;z-index:20;backdrop-filter:blur(18px);background:color-mix(in srgb,var(--bg) 82%,transparent);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:68px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:900;letter-spacing:-.3px}
+.brand-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:14px;background:linear-gradient(135deg,#7587ff,#4ee0c0);color:#10152c;font-size:20px;box-shadow:0 8px 25px #5b7dff38}
+.navlinks{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.navlinks a,.iconbtn{padding:8px 12px;border:1px solid transparent;border-radius:12px;text-decoration:none;color:var(--muted);font-size:13px;background:transparent}
+.navlinks a:hover,.iconbtn:hover{background:var(--panel2);color:var(--text);border-color:var(--line)}
+.iconbtn{border:1px solid var(--line);font-size:18px;min-width:42px}
+.hero{padding:76px 0 46px;position:relative;overflow:hidden}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;color:var(--accent2);font-size:13px;background:var(--panel)}
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--accent2);box-shadow:0 0 0 5px color-mix(in srgb,var(--accent2) 16%,transparent)}
+h1{font-size:clamp(36px,6vw,70px);line-height:1.2;letter-spacing:-2px;margin:22px 0 18px}
+.gradient-text{background:linear-gradient(100deg,var(--accent),var(--accent2));color:transparent;background-clip:text;-webkit-background-clip:text}
+.lead{max-width:760px;color:var(--muted);font-size:clamp(16px,2vw,19px)}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin:28px 0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);padding:11px 17px;border-radius:14px;text-decoration:none;font-weight:800;background:var(--panel);color:var(--text);transition:transform .18s,box-shadow .18s}
+.btn:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.btn.primary{border:0;background:linear-gradient(120deg,#7b8aff,#4be0c0);color:#0d1630}
+.hero-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-width:700px;margin-top:34px}
+.stat{border:1px solid var(--line);background:var(--panel);border-radius:18px;padding:14px 17px}
+.stat strong{display:block;font-size:24px}.stat span{font-size:12px;color:var(--muted)}
+.section{padding:54px 0}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:25px}
+.kicker{color:var(--accent2);font-weight:800;font-size:12px;letter-spacing:1px}
+h2{font-size:clamp(26px,4vw,38px);line-height:1.35;margin:6px 0 8px;letter-spacing:-.8px}
+.section-desc{color:var(--muted);max-width:700px;margin:0}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.card{border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);padding:23px;box-shadow:var(--shadow)}
+.card h3{margin:8px 0 6px;font-size:19px}
+.card p{margin:6px 0;color:var(--muted)}
+.big-icon{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:var(--panel2);font-size:25px}
+.tag{display:inline-flex;padding:4px 9px;border-radius:9px;font-size:12px;font-weight:800}
+.tag.safe{color:var(--accent2);background:color-mix(in srgb,var(--accent2) 12%,transparent)}
+.tag.unsafe{color:var(--danger);background:color-mix(in srgb,var(--danger) 12%,transparent)}
+.tag.info{color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.mini{font-size:12px;color:var(--muted)}
+.demo{overflow:hidden}
+.demo-header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.switcher{display:inline-flex;padding:5px;border:1px solid var(--line);border-radius:14px;background:var(--bg2);gap:4px}
+.switcher button{border:0;background:transparent;color:var(--muted);padding:8px 13px;border-radius:10px;font-weight:800}
+.switcher button.active{background:linear-gradient(120deg,#7c8cff,#4de0c0);color:#0c1530}
+.flow{display:grid;grid-template-columns:1fr 100px 1fr;align-items:center;gap:14px;margin:24px 0}
+.endpoint{padding:18px 10px;border:1px solid var(--line);border-radius:18px;text-align:center;background:var(--panel2)}
+.endpoint .emoji{font-size:32px;display:block}
+.endpoint strong{display:block}
+.endpoint span{font-size:12px;color:var(--muted)}
+.channel{text-align:center}
+.channel .arrow{font-size:26px;display:block;color:var(--accent2)}
+.packet{margin:8px auto;padding:8px 10px;border-radius:10px;background:color-mix(in srgb,var(--accent2) 12%,var(--panel));border:1px solid color-mix(in srgb,var(--accent2) 35%,transparent);font-size:12px;word-break:break-word}
+.packet.insecure{background:color-mix(in srgb,var(--danger) 10%,var(--panel));border-color:color-mix(in srgb,var(--danger) 35%,transparent)}
+.statusline{padding:13px 15px;border-radius:14px;background:var(--panel2);border:1px solid var(--line);display:flex;gap:10px;align-items:start}
+.statusline b{display:block}
+.statusline p{margin:2px 0 0;color:var(--muted);font-size:13px}
+code,.code{font-family:Consolas,Monaco,monospace;direction:ltr;unicode-bidi:plaintext;background:var(--bg2);border:1px solid var(--line);padding:3px 7px;border-radius:7px;color:var(--accent2)}
+.timeline{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.timeline:before{content:"";position:absolute;top:21px;right:7%;left:7%;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:.6}
+.timeitem{position:relative;z-index:1}
+.timepoint{width:42px;height:42px;display:grid;place-items:center;border-radius:50%;border:2px solid var(--accent);background:var(--bg);font-weight:900;margin-bottom:13px}
+.timeitem button{width:100%;text-align:right;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:16px;padding:15px;min-height:155px}
+.timeitem button:hover,.timeitem button.selected{border-color:var(--accent2);transform:translateY(-2px)}
+.timeitem strong{display:block;font-size:16px}
+.timeitem small{color:var(--accent2);font-weight:800}
+.timeline-detail{margin-top:16px;min-height:105px}
+.stepper{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:20px 0}
+.stepbtn{border:1px solid var(--line);background:var(--panel2);color:var(--muted);border-radius:13px;padding:12px 8px;font-size:13px}
+.stepbtn.active{color:var(--text);border-color:var(--accent2);background:color-mix(in srgb,var(--accent2) 12%,var(--panel))}
+.handshake-stage{display:grid;grid-template-columns:150px 1fr;gap:20px;align-items:center}
+.shield-art{min-height:155px;border-radius:22px;display:grid;place-items:center;background:radial-gradient(circle,color-mix(in srgb,var(--accent2) 20%,transparent),transparent 70%),var(--panel2);font-size:64px}
+.progress{height:7px;border-radius:99px;background:var(--bg2);overflow:hidden;margin:16px 0}
+.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:25%;transition:width .25s}
+.step-controls{display:flex;gap:9px;margin-top:18px;flex-wrap:wrap}
+.smallbtn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:8px 13px;border-radius:11px}
+.smallbtn:disabled{opacity:.35;cursor:not-allowed}
+.pillrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.pill{padding:6px 10px;border:1px solid var(--line);border-radius:999px;font-size:12px;color:var(--muted)}
+.feature{display:flex;gap:13px;align-items:start}
+.feature .big-icon{flex-shrink:0}
+.feature p{font-size:14px}
+details{border:1px solid var(--line);border-radius:15px;background:var(--panel);padding:14px 17px}
+details+details{margin-top:10px}
+summary{cursor:pointer;font-weight:800}
+details p{color:var(--muted);margin:10px 0 0}
+.quiz-question{font-size:19px;font-weight:900;margin:0 0 15px}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.option{padding:12px;border:1px solid var(--line);border-radius:13px;background:var(--panel2);color:var(--text);text-align:right}
+.option:hover{border-color:var(--accent)}
+.option.correct{border-color:var(--accent2);background:color-mix(in srgb,var(--accent2) 12%,var(--panel))}
+.option.wrong{border-color:var(--danger);background:color-mix(in srgb,var(--danger) 10%,var(--panel))}
+.quiz-feedback{margin-top:13px;min-height:28px;color:var(--muted)}
+.quiz-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:18px}
+.score{font-weight:900;color:var(--accent2)}
+.glossary-search{width:100%;border:1px solid var(--line);background:var(--bg2);color:var(--text);padding:13px 15px;border-radius:13px;font:inherit;margin:12px 0 16px}
+.glossary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.term{border:1px solid var(--line);background:var(--panel);border-radius:13px;padding:12px}
+.term b{display:block;color:var(--accent2);direction:ltr;text-align:right}
+.term span{font-size:13px;color:var(--muted)}
+.cta{background:linear-gradient(125deg,color-mix(in srgb,var(--accent) 18%,var(--panel)),color-mix(in srgb,var(--accent2) 10%,var(--panel)));border:1px solid var(--line);border-radius:26px;padding:28px}
+.footer{padding:28px 0 38px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.creator{color:var(--text);font-weight:900}
+.backtop{position:fixed;bottom:20px;left:20px;width:44px;height:44px;border-radius:14px;background:var(--panel2);border:1px solid var(--line);color:var(--text);box-shadow:var(--shadow);z-index:10}
+.hidden{display:none!important}
+@media(max-width:800px){.navlinks{display:none}.grid3{grid-template-columns:1fr}.timeline{grid-template-columns:repeat(2,minmax(0,1fr))}.timeline:before{display:none}.glossary{grid-template-columns:repeat(2,minmax(0,1fr))}.hero{padding-top:48px}.section{padding:40px 0}}
+@media(max-width:560px){.container{width:min(100% - 22px,1120px)}.grid2{grid-template-columns:1fr}.hero-stats{grid-template-columns:1fr}.flow{grid-template-columns:1fr;gap:7px}.channel .arrow{transform:rotate(90deg)}.handshake-stage{grid-template-columns:1fr}.shield-art{min-height:100px}.stepper{grid-template-columns:repeat(2,minmax(0,1fr))}.options{grid-template-columns:1fr}.timeline{grid-template-columns:1fr 1fr}.timeitem button{min-height:170px;padding:11px}.glossary{grid-template-columns:1fr 1fr}h1{letter-spacing:-1px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="container nav">
+    <a class="brand" href="#top" aria-label="رفتن به ابتدای صفحه"><span class="brand-icon">⌁</span><span>آزمایشگاه امنیت وب</span></a>
+    <nav class="navlinks" aria-label="ناوبری اصلی">
+      <a href="#compare">مقایسه</a><a href="#history">تاریخچه</a><a href="#tls">TLS</a><a href="#quiz">آزمون</a><a href="#glossary">واژه‌نامه</a>
+    </nav>
+    <button class="iconbtn" id="themeToggle" aria-label="تغییر حالت روشن و تاریک" title="تغییر پوسته">☼</button>
+  </div>
+</header>
+<main id="top">
+<section class="hero">
+  <div class="container">
+    <span class="eyebrow"><span class="pulse"></span> یک ماجراجویی تعاملی در دنیای اینترنت</span>
+    <h1>HTTP یا HTTPS؟<br><span class="gradient-text">نبرد پیام‌های آشکار و مخفی</span></h1>
+    <p class="lead">وقتی رمز بازی، پیام یا اطلاعات ورودت را در اینترنت می‌فرستی، چه کسی می‌تواند آن را ببیند؟ در این آزمایشگاه، با مثال‌های ساده و چند تجربهٔ تعاملی می‌فهمی پشت قفل کوچک کنار آدرس سایت چه فناوری بزرگی قرار دارد.</p>
+    <div class="hero-actions">
+      <a class="btn primary" href="#compare">شروع آزمایش <span>←</span></a>
+      <a class="btn" href="#tls">کشف سازوکار TLS <span>⌘</span></a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><strong>3</strong><span>ویژگی امنیتی کلیدی</span></div>
+      <div class="stat"><strong>4</strong><span>مرحلهٔ ساده‌شدهٔ TLS</span></div>
+      <div class="stat"><strong>5</strong><span>سؤال برای سنجش دانسته‌ها</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="compare">
+<div class="container">
+  <div class="section-head"><div><div class="kicker">آزمایش شمارهٔ ۰۱</div><h2>یک پیام؛ دو مسیر متفاوت</h2><p class="section-desc">حالت ارتباط را عوض کن و ببین داده در مسیر چه وضعیتی دارد. این یک شبیه‌سازی آموزشی است، نه ارسال واقعی اطلاعات.</p></div></div>
+  <div class="card demo">
+    <div class="demo-header">
+      <div><span class="tag info">شبیه‌ساز ارتباط</span><h3 style="margin-bottom:0">ارسال اطلاعات ورود به سرور</h3></div>
+      <div class="switcher" role="group" aria-label="انتخاب پروتکل"><button id="httpMode" class="active" aria-pressed="true">HTTP</button><button id="httpsMode" aria-pressed="false">HTTPS</button></div>
+    </div>
+    <div class="flow">
+      <div class="endpoint"><span class="emoji">💻</span><strong>مرورگر تو</strong><span>درخواست صفحهٔ ورود</span><div class="packet" id="senderPacket">user=ali · password=••••••</div></div>
+      <div class="channel"><span class="arrow" id="flowArrow">⟶</span><span class="mini" id="channelLabel">بدون رمزنگاری TLS</span><div class="packet insecure" id="middlePacket">متن قابل‌خواندن</div></div>
+      <div class="endpoint"><span class="emoji">🗄️</span><strong>سرور سایت</strong><span>پاسخ به درخواست</span><div class="packet" id="receiverPacket">در انتظار درخواست…</div></div>
+    </div>
+    <div class="statusline" aria-live="polite"><span id="statusIcon" style="font-size:22px">⚠️</span><div><b id="statusTitle">مسیر بدون محافظت TLS</b><p id="statusText">اگر فردی بتواند ترافیک این ارتباط را مشاهده کند، ممکن است محتوای ارسال‌شده را بخواند یا دست‌کاری کند.</p></div></div>
+    <div class="pillrow"><span class="pill" id="pill1">رمزنگاری: ندارد</span><span class="pill" id="pill2">یکپارچگی: تضمین نمی‌شود</span><span class="pill" id="pill3">پورت پیش‌فرض: 80</span></div>
+    <p class="mini" style="margin-top:16px">نکتهٔ دقیق: HTTPS محتوای ارتباط را در مسیر انتقال محافظت می‌کند؛ اما IP، زمان و حجم تبادل یا برخی فراداده‌ها ممکن است همچنان قابل مشاهده باشند.</p>
+  </div>
+</div>
+</section>
+
+<section class="section" id="basics">
+<div class="container">
+  <div class="section-head"><div><div class="kicker">مفاهیم پایه</div><h2>هر کدام چه کاری انجام می‌دهند؟</h2><p class="section-desc">HTTPS یک پروتکل کاملاً جدا از HTTP نیست؛ HTTP را از داخل یک ارتباط محافظت‌شده با TLS عبور می‌دهد.</p></div></div>
+  <div class="grid2">
+    <article class="card"><div class="big-icon">📨</div><span class="tag unsafe">HTTP</span><h3>قوانین گفت‌وگوی وب</h3><p>HTTP مشخص می‌کند مرورگر چگونه درخواست بفرستد و سرور چگونه پاسخ دهد. به‌خودی‌خود رمزنگاری TLS فراهم نمی‌کند.</p><p><code>GET /games</code> یعنی: «صفحهٔ بازی‌ها را برایم بفرست.»</p></article>
+    <article class="card"><div class="big-icon">🛡️</div><span class="tag safe">HTTPS = HTTP + TLS</span><h3>گفت‌وگو با محافظت رمزنگاری</h3><p>TLS از محتوای ارتباط در مسیر محافظت می‌کند، تغییرات غیرمجاز را تشخیص می‌دهد و به مرورگر کمک می‌کند هویت دامنهٔ سرور را بررسی کند.</p><p><code>200 OK</code> یعنی درخواست معمولاً موفق بوده است؛ نه اینکه سایت لزوماً قابل اعتماد باشد!</p></article>
+  </div>
+  <div class="grid3" style="margin-top:16px">
+    <article class="card feature"><div class="big-icon">🔒</div><div><h3>محرمانگی</h3><p>محتوا برای شنودگرِ فاقد کلیدهای لازم قابل‌خواندن نیست.</p></div></article>
+    <article class="card feature"><div class="big-icon">🧩</div><div><h3>یکپارچگی</h3><p>دست‌کاری داده‌های محافظت‌شده در مسیر قابل تشخیص است.</p></div></article>
+    <article class="card feature"><div class="big-icon">🪪</div><div><h3>احراز هویت سرور</h3><p>مرورگر اعتبار گواهی و تطابق آن با دامنه را بررسی می‌کند.</p></div></article>
+  </div>
+</div>
+</section>
+
+<section class="section" id="history">
+<div class="container">
+  <div class="section-head"><div><div class="kicker">آزمایش شمارهٔ ۰۲</div><h2>سفر در زمان اینترنت</h2><p class="section-desc">روی هر ایستگاه بزن تا داستان آن دوره را بخوانی.</p></div></div>
+  <div class="timeline" id="timeline">
+    <div class="timeitem"><div class="timepoint">01</div><button class="selected" data-era="0"><small>۱۹۸۹–۱۹۹۱</small><strong>تولد وب</strong><span class="mini">ایدهٔ وب و HTTP اولیه</span></button></div>
+    <div class="timeitem"><div class="timepoint">02</div><button data-era="1"><small>۱۹۹۶–۱۹۹۹</small><strong>استانداردسازی</strong><span class="mini">HTTP/1.0، 1.1 و TLS 1.0</span></button></div>
+    <div class="timeitem"><div class="timepoint">03</div><button data-era="2"><small>۲۰۱۵–۲۰۱۸</small><strong>سرعت و امنیت</strong><span class="mini">HTTP/2 و TLS 1.3</span></button></div>
+    <div class="timeitem"><div class="timepoint">04</div><button data-era="3"><small>۲۰۲۲ به بعد</small><strong>نسل تازهٔ وب</strong><span class="mini">استاندارد HTTP/3</span></button></div>
+  </div>
+  <div class="card timeline-detail" aria-live="polite"><span class="tag info" id="eraDate">۱۹۸۹–۱۹۹۱</span><h3 id="eraTitle">تولد وب</h3><p id="eraText">تیم برنرز-لی ایدهٔ وب جهان‌گستر را در CERN توسعه داد. HTTP اولیه بسیار ساده بود و برای درخواست و دریافت منابع طراحی شده بود.</p></div>
+</div>
+</section>
+
+<section class="section" id="tls">
+<div class="container">
+  <div class="section-head"><div><div class="kicker">آزمایش شمارهٔ ۰۳</div><h2>دست‌دهی TLS؛ قبل از شروع مأموریت</h2><p class="section-desc">TLS Handshake مثل هماهنگی دو طرف پیش از گفت‌وگوی محرمانه است. با دکمه‌ها مراحل را قدم‌به‌قدم بررسی کن.</p></div></div>
+  <div class="card">
+    <div class="stepper" role="group" aria-label="مراحل TLS">
+      <button class="stepbtn active" data-step="0">۱. توافق</button><button class="stepbtn" data-step="1">۲. گواهی</button><button class="stepbtn" data-step="2">۳. کلیدها</button><button class="stepbtn" data-step="3">۴. ارتباط امن</button>
+    </div>
+    <div class="handshake-stage">
+      <div class="shield-art" id="handshakeIcon" aria-hidden="true">🤝</div>
+      <div><span class="tag safe" id="handshakeTag">مرحلهٔ اول از چهار</span><h3 id="handshakeTitle">توافق بر سر روش‌ها</h3><p id="handshakeText">مرورگر و سرور دربارهٔ نسخهٔ TLS و الگوریتم‌های مورد پشتیبانی مذاکره می‌کنند. در TLS 1.3 تعداد رفت‌وبرگشت‌های لازم کمتر شده است.</p><div class="progress"><span id="handshakeProgress"></span></div><div class="mini" id="handshakeHint">هدف: پیدا کردن روش امن مشترک</div></div>
+    </div>
+    <div class="step-controls"><button class="btn primary" id="nextStep">مرحلهٔ بعد ←</button><button class="smallbtn" id="prevStep" disabled>→ مرحلهٔ قبل</button><button class="smallbtn" id="resetStep">از اول</button></div>
+  </div>
+  <div class="grid3" style="margin-top:16px">
+    <article class="card"><div class="big-icon">🔑</div><h3>کلید عمومی</h3><p>بخشی از اطلاعات رمزنگاری است که می‌تواند منتشر شود و در بررسی امضا یا سازوکارهای رمزنگاری نقش دارد.</p></article>
+    <article class="card"><div class="big-icon">🤫</div><h3>کلید خصوصی</h3><p>باید محرمانه بماند. در TLS مدرن، کلید خصوصی سرور معمولاً برای رمزکردن تمام داده‌های وب به کار نمی‌رود.</p></article>
+    <article class="card"><div class="big-icon">⚙️</div><h3>کلیدهای نشست</h3><p>دو طرف کلیدهای لازم برای رمزنگاری سریع داده‌های همان ارتباط را تولید یا مشتق می‌کنند.</p></article>
+  </div>
+</div>
+</section>
+
+<section class="section" id="versions">
+<div class="container">
+  <div class="section-head"><div><div class="kicker">زیر کاپوت</div><h2>HTTP/1.1، HTTP/2 و HTTP/3</h2><p class="section-desc">نسخه‌های جدیدتر روش انتقال داده را بهبود داده‌اند؛ شمارهٔ نسخه به‌تنهایی معادل امنیت نیست.</p></div></div>
+  <div class="grid3">
+    <article class="card"><span class="tag info">HTTP/1.1</span><h3>قدیمی و پراستفاده</h3><p>اتصال‌های پایدار و قواعدی برای درخواست و پاسخ وب ارائه می‌دهد. هنوز در بسیاری از سیستم‌ها دیده می‌شود.</p><div class="pillrow"><span class="pill">TCP</span><span class="pill">پورت معمول 80/443</span></div></article>
+    <article class="card"><span class="tag info">HTTP/2</span><h3>چند جریان هم‌زمان</h3><p>با قاب‌بندی دودویی و چندگانه‌سازی، انتقال چندین جریان داده روی یک اتصال را کارآمدتر می‌کند.</p><div class="pillrow"><span class="pill">معمولاً TLS در مرورگرها</span><span class="pill">کارایی بهتر</span></div></article>
+    <article class="card"><span class="tag safe">HTTP/3</span><h3>بر پایهٔ QUIC</h3><p>از QUIC روی UDP استفاده می‌کند؛ راه‌اندازی اتصال و بازیابی پس از برخی تغییرات شبکه می‌تواند بهتر باشد.</p><div class="pillrow"><span class="pill">QUIC + TLS 1.3</span><span class="pill">UDP</span></div></article>
+  </div>
+  <div class="statusline" style="margin-top:16px"><span style="font-size:22px">💡</span><div><b>پس چرا پورت‌ها مهم‌اند؟</b><p>پورت پیش‌فرض HTTP برابر 80 و HTTPS برابر 443 است؛ اما این‌ها قراردادهای رایج‌اند، نه قانون غیرقابل‌تغییر. سرور می‌تواند پورت دیگری داشته باشد.</p></div></div>
+</div>
+</section>
+
+<section class="section" id="myths">
+<div class="container">
+  <div class="section-head"><div><div class="kicker">رفع سوءتفاهم</div><h2>چه چیزهایی را نباید اشتباه بگیریم؟</h2></div></div>
+  <details><summary>«اگر قفل HTTPS هست، پس سایت حتماً معتبر است.»</summary><p>نه. گواهی معمولی به بررسی هویت دامنه کمک می‌کند؛ یک سایت فیشینگ هم می‌تواند برای دامنهٔ خودش گواهی معتبر بگیرد. نام دامنه را دقیق بخوان.</p></details>
+  <details><summary>«HTTPS همه‌چیز را مخفی می‌کند.»</summary><p>نه. محتوای HTTP معمولاً رمزنگاری می‌شود، اما IP، زمان و حجم ارتباط و برخی فراداده‌ها ممکن است قابل مشاهده باشند.</p></details>
+  <details><summary>«HTTPS یعنی رمز عبور در سرور هم امن ذخیره می‌شود.»</summary><p>نه. HTTPS از مسیر انتقال محافظت می‌کند. سرور باید رمز عبور را با روش مناسب و الگوریتم هش مخصوص رمز عبور ذخیره کند و از داده‌ها مراقبت کند.</p></details>
+  <details><summary>«HTTP/3 یعنی نسخه‌ای ذاتاً امن‌تر از HTTPS.»</summary><p>HTTP/3 نسخهٔ HTTP است که از QUIC استفاده می‌کند. امنیت به طراحی و پیکربندی پروتکل‌های امنیتی هم وابسته است؛ شمارهٔ نسخه به‌تنهایی تضمین مطلق نیست.</p></details>
+  <details><summary>«HTTPS همیشه سایت را کند می‌کند.»</summary><p>TLS برای راه‌اندازی ارتباط هزینهٔ پردازشی و رفت‌وبرگشت دارد، اما پروتکل‌های جدید، اتصال پایدار و بهینه‌سازی‌ها می‌توانند سربار را کاهش دهند. نتیجه به شرایط بستگی دارد.</p></details>
+</div>
+</section>
+
+<section class="section" id="quiz">
+<div class="container">
+  <div class="section-head"><div><div class="kicker">آزمایش شمارهٔ ۰۴</div><h2>چالش امنیت وب 🎯</h2><p class="section-desc">پنج سؤال کوتاه؛ دانش خودت را امتحان کن. پاسخ درست را انتخاب کن تا توضیحش را ببینی.</p></div></div>
+  <div class="card">
+    <div class="demo-header"><span class="tag info" id="questionCount">سؤال ۱ از ۵</span><span class="score" id="scoreLabel">امتیاز: ۰</span></div>
+    <div class="progress"><span id="quizProgress" style="width:20%"></span></div>
+    <p class="quiz-question" id="questionText">کدام گزینه درست است؟</p>
+    <div class="options" id="options"></div>
+    <div class="quiz-feedback" id="quizFeedback" aria-live="polite">یک پاسخ انتخاب کن.</div>
+    <div class="quiz-footer"><span class="mini" id="quizTip">هر پاسخ درست یک امتیاز دارد.</span><button class="btn primary" id="nextQuestion" disabled>سؤال بعد ←</button></div>
+  </div>
+</div>
+</section>
+
+<section class="section" id="glossary">
+<div class="container">
+  <div class="section-head"><div><div class="kicker">فرهنگ واژگان</div><h2>واژه‌های حرفه‌ای، به زبان ساده</h2><p class="section-desc">واژه‌ای را جست‌وجو کن تا تعریفش را پیدا کنی.</p></div></div>
+  <input class="glossary-search" id="glossarySearch" type="search" placeholder="مثلاً TLS، گواهی، پورت..." aria-label="جست‌وجو در واژه‌نامه">
+  <div class="glossary" id="glossaryList">
+    <div class="term"><b>HTTP</b><span>قواعد درخواست و پاسخ در وب.</span></div>
+    <div class="term"><b>HTTPS</b><span>HTTP روی ارتباط محافظت‌شده با TLS.</span></div>
+    <div class="term"><b>TLS</b><span>پروتکل حفاظت از محرمانگی و یکپارچگی ارتباط.</span></div>
+    <div class="term"><b>Handshake</b><span>مذاکرهٔ اولیه برای آماده‌سازی ارتباط امن.</span></div>
+    <div class="term"><b>CA</b><span>مرجع صدور گواهی دیجیتال.</span></div>
+    <div class="term"><b>Certificate</b><span>گواهی دیجیتال برای پیوند دادن دامنه به کلید عمومی.</span></div>
+    <div class="term"><b>Encryption</b><span>تبدیل داده به شکلی که بدون کلید قابل‌خواندن نباشد.</span></div>
+    <div class="term"><b>Integrity</b><span>قابلیت تشخیص دست‌کاری داده‌ها.</span></div>
+    <div class="term"><b>MITM</b><span>حمله‌ای که مهاجم بین دو طرف ارتباط قرار می‌گیرد.</span></div>
+    <div class="term"><b>HSTS</b><span>سیاستی که به مرورگر می‌گوید با دامنه از HTTPS استفاده کند.</span></div>
+    <div class="term"><b>QUIC</b><span>پروتکل انتقال مبتنی بر UDP که HTTP/3 از آن استفاده می‌کند.</span></div>
+    <div class="term"><b>Port</b><span>شمارهٔ منطقی برای مشخص کردن سرویس شبکه.</span></div>
+  </div>
+  <p id="noTerms" class="mini hidden">واژه‌ای پیدا نشد؛ عبارت دیگری را امتحان کن.</p>
+</div>
+</section>
+
+<section class="section">
+<div class="container">
+  <div class="cta">
+    <span class="tag safe">خلاصهٔ طلایی</span>
+    <h2>HTTP یعنی گفت‌وگوی وب؛ HTTPS یعنی گفت‌وگو با حفاظت رمزنگاری‌شده.</h2>
+    <p class="section-desc">HTTPS لایه‌ای اساسی از امنیت است، اما جایگزین بررسی دامنه، برنامه‌نویسی امن، ذخیره‌سازی درست اطلاعات و مراقبت از دستگاه نمی‌شود.</p>
+    <div class="hero-actions" style="margin-bottom:0"><a class="btn primary" href="#top">بازگشت به بالا ↑</a><button class="btn" id="printBtn">🖨️ چاپ / ذخیره PDF</button></div>
+  </div>
+</div>
+</section>
+</main>
+<footer class="footer">
+  <div class="container footer-inner"><div>ساخته‌شده برای یادگیری کنجکاوانهٔ دنیای وب ✦</div><div>سازنده: <span class="creator">محمد سلیمانی</span></div><div>یک پروژهٔ آموزشی مستقل · بدون نیاز به اینترنت</div></div>
+</footer>
+<button class="backtop" id="backTop" aria-label="بازگشت به بالای صفحه" title="بازگشت به بالا">↑</button>
+<script>
+(() => {
+  const $ = (s, root=document) => root.querySelector(s);
+  const $$ = (s, root=document) => [...root.querySelectorAll(s)];
+
+  // Theme toggle with local preference when available.
+  const themeButton = $('#themeToggle');
+  try { if (localStorage.getItem('web-lab-theme') === 'light') document.body.classList.add('light'); } catch(e) {}
+  const updateThemeIcon = () => themeButton.textContent = document.body.classList.contains('light') ? '☾' : '☼';
+  updateThemeIcon();
+  themeButton.addEventListener('click', () => {
+    document.body.classList.toggle('light'); updateThemeIcon();
+    try { localStorage.setItem('web-lab-theme', document.body.classList.contains('light') ? 'light' : 'dark'); } catch(e) {}
+  });
+
+  // HTTP / HTTPS demonstration.
+  const httpButton=$('#httpMode'), httpsButton=$('#httpsMode');
+  function setMode(secure) {
+    httpButton.classList.toggle('active',!secure); httpsButton.classList.toggle('active',secure);
+    httpButton.setAttribute('aria-pressed',String(!secure)); httpsButton.setAttribute('aria-pressed',String(secure));
+    $('#flowArrow').textContent = secure ? '⟶ 🔐' : '⟶';
+    $('#channelLabel').textContent = secure ? 'کانال محافظت‌شده با TLS' : 'بدون رمزنگاری TLS';
+    $('#middlePacket').textContent = secure ? 'رمزمتن: 8F A2 • • •' : 'user=ali · password=1234';
+    $('#middlePacket').classList.toggle('insecure',!secure);
+    $('#receiverPacket').textContent = secure ? 'درخواست در نقطهٔ پایانی رمزگشایی می‌شود' : 'درخواست دریافت شد';
+    $('#statusIcon').textContent = secure ? '🛡️' : '⚠️';
+    $('#statusTitle').textContent = secure ? 'ارتباط با TLS محافظت می‌شود' : 'مسیر بدون محافظت TLS';
+    $('#statusText').textContent = secure
+      ? 'شنودگر مسیر معمولاً نمی‌تواند محتوای درخواست را بخواند یا بی‌صدا تغییر دهد؛ با این حال، این شبیه‌سازی تمام فراداده‌ها را نشان نمی‌دهد.'
+      : 'اگر فردی بتواند ترافیک این ارتباط را مشاهده کند، ممکن است محتوای ارسال‌شده را بخواند یا دست‌کاری کند.';
+    $('#pill1').textContent = 'رمزنگاری: '+(secure?'فعال':'ندارد');
+    $('#pill2').textContent = 'یکپارچگی: '+(secure?'محافظت‌شده':'تضمین نمی‌شود');
+    $('#pill3').textContent = 'پورت پیش‌فرض: '+(secure?'443':'80');
+    $('#senderPacket').textContent = 'user=ali · password='+(secure?'••••••':'1234');
+  }
+  httpButton.addEventListener('click',()=>setMode(false));
+  httpsButton.addEventListener('click',()=>setMode(true));
+
+  // History timeline.
+  const eras=[
+    {date:'۱۹۸۹–۱۹۹۱',title:'تولد وب',text:'تیم برنرز-لی ایدهٔ وب جهان‌گستر را در CERN توسعه داد. HTTP اولیه بسیار ساده بود و برای درخواست و دریافت منابع طراحی شده بود.'},
+    {date:'۱۹۹۶–۱۹۹۹',title:'استانداردسازی وب و امنیت',text:'HTTP/1.0 در سال ۱۹۹۶ و HTTP/1.1 در سال ۱۹۹۷ استاندارد شدند. TLS 1.0 در سال ۱۹۹۹ به‌عنوان جانشین استانداردشدهٔ SSL منتشر شد.'},
+    {date:'۲۰۱۵–۲۰۱۸',title:'کارایی بیشتر، TLS مدرن',text:'HTTP/2 در سال ۲۰۱۵ استاندارد شد و HTTP را کارآمدتر کرد. در سال ۲۰۱۸، TLS 1.3 با طراحی ساده‌تر و دست‌دهی سریع‌تر منتشر شد.'},
+    {date:'۲۰۲۲ به بعد',title:'نسل تازهٔ انتقال وب',text:'HTTP/3 در سال ۲۰۲۲ استاندارد شد. این نسخه از QUIC روی UDP استفاده می‌کند و می‌تواند در شرایط شبکهٔ متغیر تجربهٔ بهتری ارائه دهد.'}
+  ];
+  $$('#timeline button').forEach(btn=>btn.addEventListener('click',()=>{
+    $$('#timeline button').forEach(b=>b.classList.toggle('selected',b===btn));
+    const e=eras[Number(btn.dataset.era)];
+    $('#eraDate').textContent=e.date;$('#eraTitle').textContent=e.title;$('#eraText').textContent=e.text;
+  }));
+
+  // TLS handshake stepper.
+  const steps=[
+    {icon:'🤝',tag:'مرحلهٔ اول از چهار',title:'توافق بر سر روش‌ها',text:'مرورگر و سرور دربارهٔ نسخهٔ TLS و الگوریتم‌های مورد پشتیبانی مذاکره می‌کنند. در TLS 1.3 تعداد رفت‌وبرگشت‌های لازم کمتر شده است.',hint:'هدف: پیدا کردن روش امن مشترک'},
+    {icon:'🪪',tag:'مرحلهٔ دوم از چهار',title:'بررسی گواهی دیجیتال',text:'مرورگر گواهی سرور را بررسی می‌کند: زنجیرهٔ اعتماد، اعتبار زمانی و تطابق نام دامنه. گواهی معتبر به معنی قابل‌اعتماد بودن محتوای سایت نیست.',hint:'هدف: بررسی هویت دامنهٔ مورد انتظار'},
+    {icon:'🔑',tag:'مرحلهٔ سوم از چهار',title:'تولید کلیدهای ارتباط',text:'با سازوکارهای رمزنگاری، دو طرف مواد لازم برای تولید کلیدهای نشست را به دست می‌آورند. در TLS مدرن، کلید خصوصی سرور معمولاً تمام داده‌ها را مستقیماً رمز نمی‌کند.',hint:'هدف: ایجاد کلیدهای لازم برای حفاظت از داده‌ها'},
+    {icon:'🛡️',tag:'مرحلهٔ چهارم از چهار',title:'شروع تبادل محافظت‌شده',text:'درخواست‌ها و پاسخ‌های HTTP از طریق اتصال TLS منتقل می‌شوند. محتوا رمزنگاری می‌شود و دست‌کاری داده‌های محافظت‌شده قابل تشخیص است.',hint:'هدف: انتقال امن‌تر درخواست و پاسخ'}
+  ];
+  let stepIndex=0;
+  function renderStep(){
+    const s=steps[stepIndex];
+    $('#handshakeIcon').textContent=s.icon;$('#handshakeTag').textContent=s.tag;$('#handshakeTitle').textContent=s.title;
+    $('#handshakeText').textContent=s.text;$('#handshakeHint').textContent=s.hint;$('#handshakeProgress').style.width=((stepIndex+1)*25)+'%';
+    $$('.stepbtn').forEach((b,i)=>b.classList.toggle('active',i===stepIndex));
+    $('#prevStep').disabled=stepIndex===0;$('#nextStep').disabled=stepIndex===3;
+    $('#nextStep').textContent=stepIndex===3?'پایان مراحل ✓':'مرحلهٔ بعد ←';
+  }
+  $$('.stepbtn').forEach(b=>b.addEventListener('click',()=>{stepIndex=Number(b.dataset.step);renderStep()}));
+  $('#nextStep').addEventListener('click',()=>{if(stepIndex<3){stepIndex++;renderStep()}});
+  $('#prevStep').addEventListener('click',()=>{if(stepIndex>0){stepIndex--;renderStep()}});
+  $('#resetStep').addEventListener('click',()=>{stepIndex=0;renderStep()});
+
+  // Quiz.
+  const questions=[
+    {q:'HTTPS در اصل چه مفهومی دارد؟',opts:['یک زبان برنامه‌نویسی جدید','HTTP روی ارتباط محافظت‌شده با TLS','یک موتور جست‌وجو','نوعی پایگاه داده'],correct:1,why:'HTTPS از HTTP برای تبادل وب استفاده می‌کند و ارتباط را با TLS محافظت می‌کند.'},
+    {q:'پورت‌های پیش‌فرض HTTP و HTTPS به‌ترتیب کدام‌اند؟',opts:['۲۱ و ۲۲','۵۳ و ۲۵','۸۰ و ۴۴۳','۴۴۳ و ۸۰'],correct:2,why:'پورت پیش‌فرض HTTP عدد ۸۰ و پورت پیش‌فرض HTTPS عدد ۴۴۳ است.'},
+    {q:'آیا سایت فیشینگ هم می‌تواند HTTPS داشته باشد؟',opts:['بله؛ گواهی به‌تنهایی خوب بودن سایت را ثابت نمی‌کند','نه، غیرممکن است','فقط اگر دولتی باشد','فقط در گوشی'],correct:0,why:'گواهی می‌تواند برای دامنهٔ جعلی هم صادر شود؛ همیشه نام دامنه را بررسی کن.'},
+    {q:'TLS چه چیزی را در مسیر ارتباط فراهم می‌کند؟',opts:['جلوگیری از تمام هک‌ها','حذف نیاز به رمز عبور','افزایش حافظهٔ کامپیوتر','محرمانگی و تشخیص دست‌کاری داده‌ها'],correct:3,why:'TLS از محتوای ارتباط محافظت می‌کند؛ اما امنیت کل برنامه یا سرور را تضمین نمی‌کند.'},
+    {q:'HTTP/3 معمولاً بر پایهٔ کدام فناوری انتقال کار می‌کند؟',opts:['Bluetooth','QUIC روی UDP','USB','SMTP'],correct:1,why:'HTTP/3 از QUIC استفاده می‌کند؛ QUIC بر پایهٔ UDP ساخته شده است.'}
+  ];
+  let qIndex=0,score=0,answered=false;
+  function renderQuestion(){
+    answered=false;
+    const q=questions[qIndex];
+    $('#questionCount').textContent=`سؤال ${qIndex+1} از ${questions.length}`;
+    $('#scoreLabel').textContent=`امتیاز: ${score}`;
+    $('#questionText').textContent=q.q;
+    $('#quizProgress').style.width=((qIndex+1)/questions.length*100)+'%';
+    $('#quizFeedback').textContent='یک پاسخ انتخاب کن.';
+    $('#nextQuestion').disabled=true;
+    $('#nextQuestion').textContent=qIndex===questions.length-1?'دیدن نتیجهٔ نهایی ✓':'سؤال بعد ←';
+    const opts=$('#options');opts.innerHTML='';
+    q.opts.forEach((label,i)=>{
+      const b=document.createElement('button');b.className='option';b.textContent=label;
+      b.addEventListener('click',()=>{
+        if(answered)return;answered=true;
+        const correct=i===q.correct;
+        if(correct)score++;
+        $$('.option',opts).forEach((el,j)=>{el.disabled=true;if(j===q.correct)el.classList.add('correct');else if(j===i)el.classList.add('wrong')});
+        $('#scoreLabel').textContent=`امتیاز: ${score}`;
+        $('#quizFeedback').textContent=(correct?'✅ آفرین! درست گفتی. ':'💡 این بار نه. ')+q.why;
+        $('#nextQuestion').disabled=false;
+      });
+      opts.appendChild(b);
+    });
+  }
+  $('#nextQuestion').addEventListener('click',()=>{
+    if(!answered)return;
+    if(qIndex<questions.length-1){qIndex++;renderQuestion()}
+    else{
+      const percent=Math.round(score/questions.length*100);
+      $('#questionCount').textContent='آزمون تمام شد';
+      $('#questionText').textContent=percent===100?'فوق‌العاده! استاد امنیت وب شدی!':percent>=60?'عالی بود! پایه‌ها را خوب یاد گرفته‌ای.':'شروع خوبی بود؛ بخش‌های بالا را یک بار دیگر مرور کن.';
+      $('#options').innerHTML='';
+      $('#quizFeedback').textContent=`نتیجهٔ تو: ${score} از ${questions.length} (${percent}٪). برای تلاش دوباره دکمه را بزن.`;
+      $('#quizProgress').style.width=percent+'%';
+      $('#nextQuestion').textContent='شروع دوباره ↻';
+      $('#nextQuestion').disabled=false;
+      $('#nextQuestion').onclick=null;
+      $('#nextQuestion').onclick=()=>{qIndex=0;score=0;renderQuestion()};
+    }
+  });
+  renderQuestion();
+
+  // Glossary filtering.
+  $('#glossarySearch').addEventListener('input',e=>{
+    const term=e.target.value.trim().toLowerCase();let visible=0;
+    $$('.term').forEach(card=>{const match=card.textContent.toLowerCase().includes(term);card.classList.toggle('hidden',!match);if(match)visible++});
+    $('#noTerms').classList.toggle('hidden',visible>0);
+  });
+
+  $('#printBtn').addEventListener('click',()=>window.print());
+  $('#backTop').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+  const backTop=$('#backTop');
+  window.addEventListener('scroll',()=>backTop.style.opacity=window.scrollY>500?'1':'0.35',{passive:true});
+})();
+</script>
+<style>
+@media print{
+  :root{--bg:#fff;--bg2:#fff;--panel:#fff;--panel2:#f5f6fa;--text:#111;--muted:#444;--line:#ddd;--accent:#3344aa;--accent2:#087f70;--shadow:none}
+  body{background:#fff;color:#111}.topbar,.hero-actions,.switcher,.step-controls,.backtop,#quiz .options,#nextQuestion,#printBtn{display:none!important}
+  .hero,.section{padding:18px 0}.card,.cta{box-shadow:none;break-inside:avoid}.timeline{grid-template-columns:repeat(4,1fr)}a{text-decoration:none}
+}
+</style>
+</body>
+</html>
